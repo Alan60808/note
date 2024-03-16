@@ -16,6 +16,7 @@ app = Flask(__name__)
 CHANNEL_ACCESS_TOKEN = "3rWORuikyamxptl2guKgn4kIyCYVFiYOZjfRSZ3hgnTKl5kIx3jhvkq6FiLZlOo6HJS2g3WFQPdGTeA2hIDiNsR8jwdyKcC95QwKISrGcu/nZxCINEcE8goEWHXk6c/frIE56ge/OGbewI9uzCwOGAdB04t89/1O/w1cDnyilFU="
 SPREADSHEET_ID = "1Xx0TnoamQkH0_gaLOOzMyAmGBUwufYKGURHVxrzfOiw"
 Channel_secret = "60c382a7a969d7c0a80e26d8c792d34f"
+client = linebot.LineBotApi(CHANNEL_ACCESS_TOKEN)
 
 # 設定要忽略的字詞
 IGNORE_WORDS = ["help", "?"]
