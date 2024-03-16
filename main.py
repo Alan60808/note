@@ -174,7 +174,7 @@ def send_message(user_id, messages):
 @app.route('/callback', methods=['POST'])
 def callback():
     # 驗證請求
-    if request.headers['X-Line-Signature'] != 'YOUR_LINE_BOT_CHANNEL_SECRET':
+    if request.headers['X-Line-Signature'] != 'Channel_secret':
         return '403 Forbidden', 403
 
     # 解析請求
