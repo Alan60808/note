@@ -1,9 +1,11 @@
 import json
 import os
 import time
-import timezone
+import pytz
+import datetime
 import urllib.request
 import SpreadsheetApp
+from pytz import utc
 from flask import Flask, render_template,request
 from linebot import LineBotApi, WebhookHandler
 
@@ -75,10 +77,12 @@ def get_user_answer(user_id, message_text):
 def set_alarm(answer_index):
     sheet_data = get_sheet_data()
     alarm_time = datetime.datetime.strptime(sheet_data[answer_index][1] + " " + sheet_data[answer_index][2], "%Y/%m/%d %H:%M")
-    # 使用者的提醒時間如果已經過了，就跳過設定提醒的步驟
-    if alarm_time < datetime.datetime.now(timezone.utc+8):
-        return
-    # 設定提醒
+     # 使用 pytz 解析使用者輸入的時間
+    alarm_time = datetime.datetime.strptime(alarm_time_str, "%Y/%m/%d %H:%M").replace(tzinfo=utc)
+
+  # 使用者的提醒時間如果已經過了，就跳過設定提醒的步驟
+    if alarm_time < datetime.datetime.now(utc):
+      return
 
 def stop_alarm():
     sheet_data = get_sheet_data()
