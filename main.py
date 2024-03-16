@@ -7,6 +7,7 @@ import urllib.request
 from django.urls import path
 from django.contrib import admin
 from django.http import HttpResponse
+from flask import Flask, render_template
 from linebot import LineBotApi, WebhookHandler
 
 app = Flask(__name__)
