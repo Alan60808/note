@@ -1,8 +1,9 @@
 import json
 import os
 import time
-import datetime
+import timezone
 import urllib.request
+import SpreadsheetApp
 from flask import Flask, render_template,request
 from linebot import LineBotApi, WebhookHandler
 
@@ -153,7 +154,7 @@ def send_message(user_id, messages):
     # 設定傳送訊息的參數
     headers = {
         "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN,
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
     }
     body = {
         "to": user_id,
