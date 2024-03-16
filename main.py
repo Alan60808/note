@@ -7,7 +7,6 @@ import urllib.request
 from django.urls import path
 from django.contrib import admin
 from django.http import HttpResponse
-from flask import Flask, render_template
 from linebot import LineBotApi, WebhookHandler
 
 app = Flask(__name__)
@@ -134,7 +133,7 @@ def send_time_picker(user_id, question):
 # 傳送確認訊息
 def send_confirm_message(user_id, question):
     # 設定確認訊息的參數
-    actions = [
+    actions = {
     {
         "type": "postback",
         "label": "確認",
@@ -147,9 +146,9 @@ def send_confirm_message(user_id, question):
         "data": "DecideCancel",
         "text": "取消",
     },
-]
+
     # 傳送確認訊息
-    send_message(user_id, [data])
+    send_message(user_id, [data])}
 
 # 傳送訊息
 def send_message(user_id, messages):
