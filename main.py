@@ -1,23 +1,15 @@
 import json
 import os
 import time
-import django
 import datetime
 import urllib.request
-from django.urls import path
-from django.contrib import admin
-from django.http import HttpResponse
-from flask import Flask, render_template, request
-from linebot.api import LineBotApi
-from linebot.webhook import WebhookHandler
-from dotenv.main import load_dotenv
+from flask import Flask, render_template
+from linebot import LineBotApi, WebhookHandler
 
 app = Flask(__name__)
 
-load_dotenv()
-
-line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
-handler = WebhookHandler(os.getenv('Channel_secret'))
+CHANNEL_ACCESS_TOKEN = "3rWORuikyamxptl2guKgn4kIyCYVFiYOZjfRSZ3hgnTKl5kIx3jhvkq6FiLZlOo6HJS2g3WFQPdGTeA2hIDiNsR8jwdyKcC95QwKISrGcu/nZxCINEcE8goEWHXk6c/frIE56ge/OGbewI9uzCwOGAdB04t89/1O/w1cDnyilFU="
+Channel_secret = "60c382a7a969d7c0a80e26d8c792d34f"
 SPREADSHEET_ID = "1Xx0TnoamQkH0_gaLOOzMyAmGBUwufYKGURHVxrzfOiw"
 
 
@@ -161,7 +153,7 @@ def send_message(user_id, messages):
     # 設定傳送訊息的參數
     headers = {
         "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN,
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
     }
     body = {
         "to": user_id,
@@ -195,9 +187,6 @@ def callback():
             client.reply_message(event['replyToken'], reply_message)
 
     return '200 OK', 200
-
-
-    
-                            
+                      
 if __name__ == "__main__":
       app.run()
