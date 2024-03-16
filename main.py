@@ -3,7 +3,7 @@ import os
 import time
 import datetime
 import urllib.request
-from flask import Flask, render_template
+from flask import Flask, render_template,request
 from linebot import LineBotApi, WebhookHandler
 
 app = Flask(__name__)
@@ -168,7 +168,7 @@ def send_message(user_id, messages):
     )
 
 @app.route('/callback', methods=['POST'])
-def callback():
+def callback(request):
     # 驗證請求
     if request.headers['X-Line-Signature'] != 'Channel_secret':
         return '403 Forbidden', 403
