@@ -3,3 +3,4 @@ fastapi
 line-bot-sdk
 python-dotenv
 django
+gunicorn
