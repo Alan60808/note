@@ -170,9 +170,26 @@ def send_message(user_id, messages):
         headers=headers,
     )
 
-@app.route("/webhook", methods=["POST"])
-def webhook():
-    main()
+@app.route('/callback', methods=['POST'])
+def callback():
+    # 驗證請求
+    if request.headers['X-Line-Signature'] != 'YOUR_LINE_BOT_CHANNEL_SECRET':
+        return '403 Forbidden', 403
+
+    # 解析請求
+    events = request.json['events']
+
+    # 處理事件
+    for event in events:
+        if event['type'] == 'message':
+            # 回覆訊息
+            reply_message = {
+                'type': 'text',
+                'text': event['message']['text']
+            }
+            client.reply_message(event['replyToken'], reply_message)
+
+    return '200 OK', 200
     
                             
 if __name__ == "__main__":
