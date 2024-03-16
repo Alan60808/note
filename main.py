@@ -13,8 +13,9 @@ from linebot import LineBotApi, WebhookHandler
 app = Flask(__name__)
 
 # 設定 Line Bot 的 Channel Access Token 和 SpreadSheet ID
-CHANNEL_ACCESS_TOKEN = "pZf5MvvX+afSAqtxcjAbO8yUykxrsMjSULNx0gxm/ajgzkk5TEG4ed3SqAx5mY/kh0QcuCwdHjKUX/xkPU+0T7ZONGdfV5bNsRLZB1SGN13B1SG6DJ39 04t89/1O/w1cDnyilFU="
+CHANNEL_ACCESS_TOKEN = "3rWORuikyamxptl2guKgn4kIyCYVFiYOZjfRSZ3hgnTKl5kIx3jhvkq6FiLZlOo6HJS2g3WFQPdGTeA2hIDiNsR8jwdyKcC95QwKISrGcu/nZxCINEcE8goEWHXk6c/frIE56ge/OGbewI9uzCwOGAdB04t89/1O/w1cDnyilFU="
 SPREADSHEET_ID = "1Xx0TnoamQkH0_gaLOOzMyAmGBUwufYKGURHVxrzfOiw"
+Channel_secret= "60c382a7a969d7c0a80e26d8c792d34f"
 
 # 設定要忽略的字詞
 IGNORE_WORDS = ["help", "?"]
