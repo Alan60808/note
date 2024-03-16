@@ -7,7 +7,7 @@ import urllib.request
 from django.urls import path
 from django.contrib import admin
 from django.http import HttpResponse
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from linebot import LineBotApi, WebhookHandler
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ app = Flask(__name__)
 # 設定 Line Bot 的 Channel Access Token 和 SpreadSheet ID
 CHANNEL_ACCESS_TOKEN = "3rWORuikyamxptl2guKgn4kIyCYVFiYOZjfRSZ3hgnTKl5kIx3jhvkq6FiLZlOo6HJS2g3WFQPdGTeA2hIDiNsR8jwdyKcC95QwKISrGcu/nZxCINEcE8goEWHXk6c/frIE56ge/OGbewI9uzCwOGAdB04t89/1O/w1cDnyilFU="
 SPREADSHEET_ID = "1Xx0TnoamQkH0_gaLOOzMyAmGBUwufYKGURHVxrzfOiw"
-Channel_secret= "60c382a7a969d7c0a80e26d8c792d34f"
+Channel_secret = "60c382a7a969d7c0a80e26d8c792d34f"
 
 # 設定要忽略的字詞
 IGNORE_WORDS = ["help", "?"]
@@ -191,6 +191,10 @@ def callback():
             client.reply_message(event['replyToken'], reply_message)
 
     return '200 OK', 200
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    main()
     
                             
 if __name__ == "__main__":
