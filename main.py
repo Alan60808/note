@@ -8,6 +8,7 @@ from linebot.models import TextSendMessage, MessageEvent, TextMessage
 from linebot.v3.webhook import WebhookHandler
 from linebot.v3.messaging import MessagingApi
 from flask import Flask, request, Blueprint
+import re
 
 # Replace with your own values
 channel_secret = '3rWORuikyamxptl2guKgn4kIyCYVFiYOZjfRSZ3hgnTKl5kIx3jhvkq6FiLZlOo6HJS2g3WFQPdGTeA2hIDiNsR8jwdyKcC95QwKISrGcu/nZxCINEcE8goEWHXk6c/frIE56ge/OGbewI9uzCwOGAdB04t89/1O/w1cDnyilFU='
@@ -15,12 +16,14 @@ channel_access_token = '60c382a7a969d7c0a80e26d8c792d34f'
 
 messaging_api = MessagingApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
-
+reminders_lock = threading.Lock()
 reminders = {}
 
 def send_reminder(event_id):
-    reminder = reminders[event_id]
-    messaging_api.push_message(reminder['user_id'], TextSendMessage(text=reminder['title']))
+    with reminders_lock:
+        reminder = reminders[event_id]
+        messaging_api.push_message(reminder['user_id'], TextSendMessage(text=reminder['title']))
+        del reminders[event_id]
 
 def add_reminder(user_id, title, time):
     event_id = str(len(reminders))
@@ -50,7 +53,7 @@ def callback():
         handler.handle(body, signature)
     except InvalidSignatureError:
         return 'Invalid signature. Please check your channelaccess token/channel secret.'
-    except Exceptionas as e:
+    except Exception as e:
         app.logger.error('Error when handling webhook body: ' + str(e))
         return 'Internal server error'
 
@@ -59,8 +62,9 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
-    if text.startswith('Add reminder'):
-        title, time = text.split(' ', 1)[1].split(' ', 1)
+    match = re.match(r'^Add reminder (.+) at (.+)$', text)
+    if match:
+        title, time = match.groups()
         add_reminder(event.source.user_id, title, time)
         messaging_api.reply_message(event.reply_token, TextSendMessage(text='Reminder added.'))
 
