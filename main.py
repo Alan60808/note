@@ -11,8 +11,8 @@ from flask import Flask, request, Blueprint
 import re
 
 # Replace with your own values
-channel_secret = '3rWORuikyamxptl2guKgn4kIyCYVFiYOZjfRSZ3hgnTKl5kIx3jhvkq6FiLZlOo6HJS2g3WFQPdGTeA2hIDiNsR8jwdyKcC95QwKISrGcu/nZxCINEcE8goEWHXk6c/frIE56ge/OGbewI9uzCwOGAdB04t89/1O/w1cDnyilFU='
-channel_access_token = '60c382a7a969d7c0a80e26d8c792d34f'
+channel_secret = 'E5Lk6496pW037iX1ex33ev6r9763bVnp+ew+mnhMdX9zDx8yQjJjd6n6V71bOJeqa6VJqd36Jh4oQRLxjXRGqPYr594iNTJajeR29EM/c39arc0P0mbMTC4E9Ggr1+JhIwynSC2nLFCiyHFkgiaAggdB04t89/1O/w1cDnyilFU='
+channel_access_token = '316f59aed7e9c194906f48bce4239b7f'
 
 messaging_api = MessagingApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
