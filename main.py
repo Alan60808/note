@@ -75,4 +75,4 @@ if __name__ == '__main__':
     schedule_thread = threading.Thread(target=schedule.run_pending)
     schedule_thread.start()
 
-    app.run()
+    app.run(host='0.0.0.0', port=80)
