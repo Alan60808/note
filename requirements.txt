@@ -1,4 +1,0 @@
-fastAPI
-uvicorn
-line-bot-sdk
-python-dotenv
