@@ -2,10 +2,13 @@ import datetime
 import time
 import requests
 import json
+from flask import Flask
 
 # 設定 Line Bot 的 Channel Access Token 和 Channel Secret
 channel_access_token = '60c382a7a969d7c0a80e26d8c792d34f'
 channel_secret = '3rWORuikyamxptl2guKgn4kIyCYVFiYOZjfRSZ3hgnTKl5kIx3jhvkq6FiLZlOo6HJS2g3WFQPdGTeA2hIDiNsR8jwdyKcC95QwKISrGcu/nZxCINEcE8goEWHXk6c/frIE56ge/OGbewI9uzCwOGAdB04t89/1O/w1cDnyilFU='
+
+app = Flask(__name__)
 
 # 設定 Line Bot 的使用者 ID
 user_id = "記事本小幫手"
@@ -31,3 +34,6 @@ while datetime.datetime.now() < remind_time:
 
 # 發送提醒訊息
 requests.post("https://api.line.me/v2/bot/message/push", headers=headers, data=json.dumps({"to": user_id, "messages": [message]}))
+
+if __name__ == "__main__":
+  app.run(host="0.0.0.0", port=8000)  # Replace 8000 with your desired port
