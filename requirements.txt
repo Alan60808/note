@@ -1,7 +1,0 @@
-uvicorn 
-fastapi
-line-bot-sdk
-python-dotenv
-gunicorn
-flask
-schedule
