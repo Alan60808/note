@@ -21,8 +21,10 @@ def callback():
     signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
     app.logger.info(f"Received request: {body}")
+
     try:
         handler.handle(body, signature)
+        app.logger.info("Handler processed successfully")
     except InvalidSignatureError:
         app.logger.error('Invalid signature. Please check your channel access token/channel secret.')
         abort(400)
@@ -35,6 +37,11 @@ def callback():
 def handle_message(event):
     text = event.message.text
     reply_token = event.reply_token
+    try:
+        response = line_bot_api.reply_message(reply_token, TextSendMessage(text="回應消息"))
+        app.logger.info(f"Reply message status: {response.status_code}")
+    except LineBotApiError as e:
+        app.logger.error(f"Failed to reply: {e}")
 
     if text.startswith('bike'):
         station_name = text.split(' ', 1)[1] if len(text.split(' ', 1)) > 1 else None
@@ -44,7 +51,7 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(reply_token, TextSendMessage(text="請輸入完整的站名，例如：'bike 文心森林公園'"))
     else:
-        line_bot_api.reply_message(reply_token, TextSendMessage(text="若需要查詢自行車站點信息，請使用 'bike 站名' 的格式，例如：'bike 文心森林公園'"))
+        line_bot_api.reply_message(reply_token, TextSendMessage(text="若需要查詢自行車站點信息，請使用 'bike 站名' ���格式，例如：'bike 文心森林公園'"))
 
 def bike_info(input_sname):
     url = 'https://datacenter.taichung.gov.tw/swagger/OpenData/86dfad5c-540c-4479-bb7d-d7439d34eeb1'
