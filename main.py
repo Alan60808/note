@@ -36,24 +36,25 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
+    app.logger.info(f"Received text: {text}")  # 確認收到的文字
     reply_token = event.reply_token
-    try:
-        response = line_bot_api.reply_message(reply_token, TextSendMessage(text="回應消息"))
-        app.logger.info(f"Reply message status: {response.status_code}")
-    except LineBotApiError as e:
-        app.logger.error(f"Failed to reply: {e}")
 
     if text.startswith('bike'):
         station_name = text.split(' ', 1)[1] if len(text.split(' ', 1)) > 1 else None
         if station_name:
             get_bike_info_msg = bike_info(station_name)
-            line_bot_api.reply_message(reply_token, TextSendMessage(text=get_bike_info_msg))
+            try:
+                response = line_bot_api.reply_message(reply_token, TextSendMessage(text=get_bike_info_msg))
+                app.logger.info("Message sent successfully")
+            except LineBotApiError as e:
+                app.logger.error(f"Failed to send message: {e}")
         else:
             line_bot_api.reply_message(reply_token, TextSendMessage(text="請輸入完整的站名，例如：'bike 文心森林公園'"))
     else:
-        line_bot_api.reply_message(reply_token, TextSendMessage(text="若需要查詢自行車站點信息，請使用 'bike 站名' ���格式，例如：'bike 文心森林公園'"))
+        line_bot_api.reply_message(reply_token, TextSendMessage(text="若需要查詢自行車站點信息，請使用 'bike 站名' 的格式，例如：'bike 文心森林公園'"))
 
 def bike_info(input_sname):
+    app.logger.info(f"Searching for bike station: {input_sname}")  # 日誌輸出正在搜索的站名
     url = 'https://datacenter.taichung.gov.tw/swagger/OpenData/86dfad5c-540c-4479-bb7d-d7439d34eeb1'
     response = requests.get(url)
     data = response.json()
@@ -74,6 +75,7 @@ def bike_info(input_sname):
             result = f"未找到 {input_sname} 相關的資料，建議您查詢：{', '.join(similar_names)}"
         else:
             result = f"未找到 {input_sname} 相關的資料"
+    app.logger.info(f"Response data: {result}")  # 日誌輸出回應的數據
     return result
 
 print(bike_info("文心森林公園"))
