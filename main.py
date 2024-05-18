@@ -78,6 +78,5 @@ def bike_info(input_sname):
     app.logger.info(f"Response data: {result}")  # 日誌輸出回應的數據
     return result
 
-
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
