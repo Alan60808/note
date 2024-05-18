@@ -49,6 +49,7 @@ def handle_message(event):
                 app.logger.info("Message sent successfully")
             except LineBotApiError as e:
                 app.logger.error(f"Failed to send message: {e}")
+                line_bot_api.reply_message(reply_token, TextSendMessage(text="發送訊息失敗，請稍後再試。"))
         else:
             line_bot_api.reply_message(reply_token, TextSendMessage(text="請輸入完整的站名，例如：'bike 文心森林公園'"))
     else:
@@ -57,20 +58,25 @@ def handle_message(event):
 def bike_info(input_sname):
     app.logger.info(f"Searching for bike station: {input_sname}")  # 日誌輸出正在搜索的站名
     url = 'https://datacenter.taichung.gov.tw/swagger/OpenData/86dfad5c-540c-4479-bb7d-d7439d34eeb1'
-    response = requests.get(url)
-    data = response.json()
-    for row in data["retVal"]:
-        if input_sname in row["sna"]:
-            sna = row["sna"]
-            tot = row["tot"]
-            sbi = row["sbi"]
-            bemp = row["bemp"]
-            result = f"{sna} 車位數：{tot} 車輛數：{sbi} 空位數：{bemp}"
-            app.logger.info(f"Found station: {result}")  # 日誌輸出找到的站點信息
-            return result
-    result = f"未找到 {input_sname} 相關的資料"
-    app.logger.info(f"Station not found: {result}")  # 日誌輸出未找到站點信息
-    return result
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # 檢查HTTP請求是否成功
+        data = response.json()
+        for row in data["retVal"]:
+            if input_sname in row["sna"]:
+                sna = row["sna"]
+                tot = row["tot"]
+                sbi = row["sbi"]
+                bemp = row["bemp"]
+                result = f"{sna} 車位數：{tot} 車輛數：{sbi} 空位數：{bemp}"
+                app.logger.info(f"Found station: {result}")  # 日誌輸出找到的站點信息
+                return result
+        result = f"未找到 {input_sname} 相關的資料"
+        app.logger.info(f"Station not found: {result}")  # 日誌輸出未找到站點信息
+        return result
+    except requests.RequestException as e:
+        app.logger.error(f"Error fetching bike info: {e}")
+        return "無法獲取自行車站點信息，請稍後再試。"
 
 if __name__ == "__main__":
     app.run(debug=True)
