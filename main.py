@@ -39,12 +39,13 @@ def handle_message(event):
     app.logger.info(f"Received text: {text}")  # 確認收到的文字
     reply_token = event.reply_token
 
-    if text.startswith('bike'):
+    if text.lower().startswith('bike'):
         station_name = text.split(' ', 1)[1] if len(text.split(' ', 1)) > 1 else None
         if station_name:
             get_bike_info_msg = bike_info(station_name)
+            app.logger.info(f"Bike info message: {get_bike_info_msg}")  # 日誌輸出回應的數據
             try:
-                response = line_bot_api.reply_message(reply_token, TextSendMessage(text=get_bike_info_msg))
+                line_bot_api.reply_message(reply_token, TextSendMessage(text=get_bike_info_msg))
                 app.logger.info("Message sent successfully")
             except LineBotApiError as e:
                 app.logger.error(f"Failed to send message: {e}")
@@ -54,6 +55,7 @@ def handle_message(event):
         line_bot_api.reply_message(reply_token, TextSendMessage(text="若需要查詢自行車站點信息，請使用 'bike 站名' 的格式，例如：'bike 文心森林公園'"))
 
 def bike_info(input_sname):
+    app.logger.info(f"Searching for bike station: {input_sname}")  # 日誌輸出正在搜索的站名
     url = 'https://datacenter.taichung.gov.tw/swagger/OpenData/86dfad5c-540c-4479-bb7d-d7439d34eeb1'
     response = requests.get(url)
     data = response.json()
@@ -63,8 +65,12 @@ def bike_info(input_sname):
             tot = row["tot"]
             sbi = row["sbi"]
             bemp = row["bemp"]
-            return f"{sna} 車位數：{tot} 車輛數：{sbi} 空位數：{bemp}"
-    return f"未找到 {input_sname} 相關的資料"
+            result = f"{sna} 車位數：{tot} 車輛數：{sbi} 空位數：{bemp}"
+            app.logger.info(f"Found station: {result}")  # 日誌輸出找到的站點信息
+            return result
+    result = f"未找到 {input_sname} 相關的資料"
+    app.logger.info(f"Station not found: {result}")  # 日誌輸出未找到站點信息
+    return result
 
 if __name__ == "__main__":
     app.run(debug=True)
