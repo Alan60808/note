@@ -54,29 +54,18 @@ def handle_message(event):
         line_bot_api.reply_message(reply_token, TextSendMessage(text="若需要查詢自行車站點信息，請使用 'bike 站名' 的格式，例如：'bike 文心森林公園'"))
 
 def bike_info(input_sname):
-    app.logger.info(f"Searching for bike station: {input_sname}")  # 日誌��出正在搜索的站名
     url = 'https://datacenter.taichung.gov.tw/swagger/OpenData/86dfad5c-540c-4479-bb7d-d7439d34eeb1'
     response = requests.get(url)
     data = response.json()
-    matched_data = None
     for row in data["retVal"]:
-        if row["sna"].startswith(input_sname) or input_sname in row["sna"]:
-            matched_data = row
-            break
-    if matched_data:
-        sna = matched_data["sna"]
-        tot = matched_data["tot"]
-        sbi = matched_data["sbi"]
-        bemp = matched_data["bemp"]
-        result = f"{sna} 車位數：{tot} 車輛數：{sbi} 空位數：{bemp}"
-    else:
-        similar_names = [row["sna"] for row in data["retVal"] if input_sname in row["sna"]]
-        if similar_names:
-            result = f"未找到 {input_sname} 相關的資料，建議您查詢：{', '.join(similar_names)}"
-        else:
-            result = f"未找到 {input_sname} 相關的資料"
-    app.logger.info(f"Response data: {result}")  # 日誌輸出回應的數據
-    return result
+        if input_sname in row["sna"]:
+            sna = row["sna"]
+            tot = row["tot"]
+            sbi = row["sbi"]
+            bemp = row["bemp"]
+            return f"{sna} 車位數：{tot} 車輛數：{sbi} 空位數：{bemp}"
+    return f"未找到 {input_sname} 相關的資料"
 
 if __name__ == "__main__":
     app.run(debug=True)
+
