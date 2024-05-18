@@ -54,7 +54,7 @@ def handle_message(event):
         line_bot_api.reply_message(reply_token, TextSendMessage(text="若需要查詢自行車站點信息，請使用 'bike 站名' 的格式，例如：'bike 文心森林公園'"))
 
 def bike_info(input_sname):
-    app.logger.info(f"Searching for bike station: {input_sname}")  # 日誌輸出正在搜索的站名
+    app.logger.info(f"Searching for bike station: {input_sname}")  # 日誌��出正在搜索的站名
     url = 'https://datacenter.taichung.gov.tw/swagger/OpenData/86dfad5c-540c-4479-bb7d-d7439d34eeb1'
     response = requests.get(url)
     data = response.json()
@@ -78,7 +78,6 @@ def bike_info(input_sname):
     app.logger.info(f"Response data: {result}")  # 日誌輸出回應的數據
     return result
 
-print(bike_info("文心森林公園"))
 
 if __name__ == "__main__":
     app.run()
