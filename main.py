@@ -70,5 +70,7 @@ def bike_info(input_sname):
             result = f"未找到 {input_sname} 相關的資料"
     return result
 
+print(bike_info("文心森林公園"))
+
 if __name__ == "__main__":
     app.run()
