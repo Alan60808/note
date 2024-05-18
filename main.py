@@ -20,21 +20,21 @@ handler = WebhookHandler(channel_secret)
 def callback():
     signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
-
+    app.logger.info(f"Received request: {body}")
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
-        logging.error('Invalid signature. Please check your channel access token/channel secret.')
+        app.logger.error('Invalid signature. Please check your channel access token/channel secret.')
         abort(400)
     except LineBotApiError as e:
-        logging.error(f'API error: {e}')
+        app.logger.error(f'API error: {e}')
         abort(500)
-
     return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
+    app.logger.info(f"Received message: {text}")
     reply_token = event.reply_token
 
     if text.startswith('bike'):
