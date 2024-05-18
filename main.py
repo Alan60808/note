@@ -34,7 +34,6 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
-    app.logger.info(f"Received message: {text}")
     reply_token = event.reply_token
 
     if text.startswith('bike'):
