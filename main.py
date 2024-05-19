@@ -1,5 +1,5 @@
-from flask import Flask, request, abort
 import json, requests, logging
+from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import (
@@ -87,4 +87,7 @@ def bike_info(input_sname):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
 
