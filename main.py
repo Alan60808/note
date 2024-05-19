@@ -62,6 +62,8 @@ def bike_info(input_sname):
         response = requests.get(url)
         response.raise_for_status()  # 檢查HTTP請求是否成功
         data = response.json()
+        app.logger.info(f"API response: {data}")  # 日誌輸出API回應
+        found = False
         for row in data["retVal"]:
             if input_sname in row["sna"]:
                 sna = row["sna"]
@@ -70,10 +72,12 @@ def bike_info(input_sname):
                 bemp = row["bemp"]
                 result = f"{sna} 車位數：{tot} 車輛數：{sbi} 空位數：{bemp}"
                 app.logger.info(f"Found station: {result}")  # 日誌輸出找到的站點信息
+                found = True
                 return result
-        result = f"未找到 {input_sname} 相關的資料"
-        app.logger.info(f"Station not found: {result}")  # 日誌輸出未找到站點信息
-        return result
+        if not found:
+            result = f"未找到 {input_sname} 相關的資料"
+            app.logger.info(f"Station not found: {result}")  # 日誌輸出未找到站點信息
+            return result
     except requests.RequestException as e:
         app.logger.error(f"Error fetching bike info: {e}")
         return "無法獲取自行車站點信息，請稍後再試。"
