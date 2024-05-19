@@ -1,5 +1,5 @@
+from flask import Flask, request, abort, render_template
 import json, requests, logging
-from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import (
@@ -8,6 +8,9 @@ from linebot.models import (
 )
 
 app = Flask(__name__)
+
+# 設置日誌
+logging.basicConfig(level=logging.INFO)
 
 # 環境變數，應從環境配置中獲取
 access_token = 'xjU2mBe3bYiy8tpJn6IWvz6XiR6FFScP3aIZyVpUf6EVOs5rjzhqQ12Ilo7nyTlObMxSLci/ijo2dVD+fn7RPx/A09kFyee1dt5M/Yby/6IbrMr4n+aPnza9DSTxqYfNURpwZWHFR6TE6VA3OaqDWAdB04t89/1O/w1cDnyilFU='
@@ -27,10 +30,10 @@ def callback():
         app.logger.info("Handler processed successfully")
     except InvalidSignatureError:
         app.logger.error('Invalid signature. Please check your channel access token/channel secret.')
-        abort(400)
+        abort(400)  # 返回 400 錯誤碼
     except LineBotApiError as e:
         app.logger.error(f'API error: {e}')
-        abort(500)
+        abort(500)  # 返回 500 錯誤碼
     return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -87,7 +90,3 @@ def bike_info(input_sname):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
