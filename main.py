@@ -36,12 +36,13 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
-    app.logger.info(f"Received text: {text}")  # 確認收到的文字
+    app.logger.info(f"Received text: {text}")  # 使用日誌輸出來確認收到的文字
     reply_token = event.reply_token
 
     if text.lower().startswith('bike'):
-        station_name = text.split(' ', 1)[1] if len(text.split(' ', 1)) > 1 else None
-        if station_name:
+        parts = text.split(' ', 1)
+        if len(parts) > 1 and parts[1].strip():
+            station_name = parts[1].strip()
             get_bike_info_msg = bike_info(station_name)
             app.logger.info(f"Bike info message: {get_bike_info_msg}")  # 日誌輸出回應的數據
             try:
@@ -51,8 +52,10 @@ def handle_message(event):
                 app.logger.error(f"Failed to send message: {e}")
                 line_bot_api.reply_message(reply_token, TextSendMessage(text="發送訊息失敗，請稍後再試。"))
         else:
+            app.logger.info("No station name provided")
             line_bot_api.reply_message(reply_token, TextSendMessage(text="請輸入完整的站名，例如：'bike 文心森林公園'"))
     else:
+        app.logger.info("Invalid command format")
         line_bot_api.reply_message(reply_token, TextSendMessage(text="若需要查詢自行車站點信息，請使用 'bike 站名' 的格式，例如：'bike 文心森林公園'"))
 
 def bike_info(input_sname):
@@ -84,5 +87,4 @@ def bike_info(input_sname):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
 
